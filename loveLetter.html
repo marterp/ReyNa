@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lablab 🥺</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffe0ec 0%, #c2e9fb 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      margin: 0;
+      padding: 1em;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 6vw;
+      color: #ff4b7d;
+      margin-bottom: 0.5em;
+      text-shadow: 1px 2px 8px #fff6fa;
+      letter-spacing: 2px;
+    }
+
+    p {
+      font-size: 4.5vw;
+      color: #333;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 16px;
+      padding: 0.7em 1.5em;
+      margin: 0.5em 0;
+      box-shadow: 0 2px 8px rgba(255, 75, 125, 0.08);
+      max-width: 90vw;
+    }
+
+    p:last-child {
+      font-style: italic;
+      color: #ff4b7d;
+      background: none;
+      box-shadow: none;
+      margin-top: 1.5em;
+    }
+
+    .message-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #ff4b7d;
+      color: #fff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 4px 16px rgba(255, 75, 125, 0.18);
+      cursor: pointer;
+      z-index: 1000;
+      transition: background 0.2s;
+    }
+
+    .message-icon:hover {
+      background: #ff6f9c;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.25);
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(255, 75, 125, 0.18);
+      padding: 2em 1.5em;
+      text-align: center;
+      width: 90vw;
+      max-width: 340px;
+      position: relative;
+      animation: popin 0.2s;
+    }
+
+    @keyframes popin {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-question {
+      font-size: 1.3rem;
+      margin-bottom: 1.5em;
+      color: #ff4b7d;
+      font-weight: bold;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 2em;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      min-height: 100px;
+      margin-top: 1em;
+    }
+
+    .modal-btn {
+      padding: 0.6em 1.2em;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      font-weight: 500;
+      position: absolute;
+    }
+
+    .modal-btn.wen {
+      background: #ff4b7d;
+      color: #fff;
+      left: 25%;
+      top: 60%;
+    }
+
+    .modal-btn.wen:hover {
+      background: #ff6f9c;
+    }
+
+    .modal-btn.haan {
+      background: #fff0f5;
+      color: #ff4b7d;
+      border: 1.5px solid #ff4b7d;
+      left: 70%;
+      top: 35%;
+      z-index: 2;
+    }
+
+    .modal-message {
+      margin-top: 1.5em;
+      color: #2e7d32;
+      font-size: 1.1rem;
+      font-weight: 500;
+      animation: fadein 0.4s;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 500px) {
+      .message-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+      }
+
+      .modal {
+        padding: 1.2em 0.8em;
+      }
+
+      .modal-question {
+        font-size: 1.1rem;
+      }
+
+      .modal-btn {
+        padding: 0.5em 1em;
+        font-size: 1rem;
+      }
+
+      .modal-btn.wen {
+        left: 30%;
+        top: 65%;
+      }
+
+      .modal-btn.haan {
+        left: 65%;
+        top: 30%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>LABLAB 🥺</h1>
+  <p>Ayayaten ka unay lablab ko.🥺</p>
+  <p>Sika lang awan sabalin lablab ko.🥺🫶</p>
+  <p>– Luvluv ❤️</p>
+
+  <div class="message-icon" id="msgIcon" title="Send message">💬</div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-question">Ayayaten nak bah lablab? 🥺</div>
+      <div class="modal-buttons" id="modalBtns">
+        <button class="modal-btn wen" id="wenBtn">Wen</button>
+        <button class="modal-btn haan" id="haanBtn">Haan</button>
+      </div>
+      <div class="modal-message" id="modalMsg" style="display:none;"></div>
+    </div>
+  </div>
+
+<script>
+  const msgIcon = document.getElementById('msgIcon');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const wenBtn = document.getElementById('wenBtn');
+  const haanBtn = document.getElementById('haanBtn');
+  const modalMsg = document.getElementById('modalMsg');
+  const modalBtns = document.getElementById('modalBtns');
+
+  msgIcon.onclick = () => {
+    modalOverlay.classList.add('active');
+    modalMsg.style.display = 'none';
+    modalBtns.style.display = 'flex';
+    wenBtn.style.left = '25%';
+    wenBtn.style.top = '60%';
+    haanBtn.style.left = '70%';
+    haanBtn.style.top = '35%';
+    haanBtn.style.position = 'absolute';
+    haanBtn.style.zIndex = 2;
+    haanBtn.style.pointerEvents = 'auto';
+  };
+
+  modalOverlay.onclick = (e) => {
+    if (e.target === modalOverlay) {
+      modalOverlay.classList.remove('active');
+    }
+  };
+
+  wenBtn.onclick = () => {
+    modalMsg.textContent = 'I love you always lablab ko. ☺️ muah.😚';
+    modalMsg.style.display = 'block';
+    modalBtns.style.display = 'none';
+  };
+
+  function moveHaan() {
+    const overlayRect = modalOverlay.getBoundingClientRect();
+    const btnRect = haanBtn.getBoundingClientRect();
+    haanBtn.style.position = 'fixed';
+    haanBtn.style.zIndex = 3000;
+
+    let newLeft = Math.random() * (overlayRect.width - btnRect.width);
+    let newTop = Math.random() * (overlayRect.height - btnRect.height);
+
+    // Clamp inside viewport
+    newLeft = Math.max(0, Math.min(newLeft, overlayRect.width - btnRect.width));
+    newTop = Math.max(0, Math.min(newTop, overlayRect.height - btnRect.height));
+
+    haanBtn.style.left = `${newLeft}px`;
+    haanBtn.style.top = `${newTop}px`;
+  }
+
+  haanBtn.onmouseenter = moveHaan;
+  haanBtn.onmousedown = moveHaan;
+  haanBtn.ontouchstart = function(e) { moveHaan(); e.preventDefault(); };
+</script>
+
+</body>
+</html>
