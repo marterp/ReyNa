@@ -279,11 +279,12 @@
   let offset = 0;
   let isLoading = false;
   let allLoaded = false;
-  let lettersCache = []; // Cache letters for relative time updates
+  let lettersCache = [];
   let fetchTimeout;
+  let isSending = false;
 
   function debounceFetchLetters() {
-    if(fetchTimeout) clearTimeout(fetchTimeout);
+    if (fetchTimeout) clearTimeout(fetchTimeout);
     fetchTimeout = setTimeout(() => {
       offset = 0;
       allLoaded = false;
@@ -323,6 +324,9 @@
   }
 
   async function confirmSend() {
+    if (isSending) return;
+    isSending = true;
+
     const title = document.getElementById('title').value.trim();
     const msg = document.getElementById('message').value.trim();
     const sender = document.getElementById('sender').value.trim() || 'Anonymous';
@@ -340,14 +344,21 @@
       });
 
       const result = await res.json();
-      if (result.success) {
+      if (result.success && result.id) {
         closeAllModals();
-        // Reset pagination and reload from scratch
-        offset = 0;
-        allLoaded = false;
-        lettersCache = [];
-        fetchLetters(true);
-        // Clear inputs
+
+        const newLetter = {
+          id: result.id,
+          title,
+          message: msg,
+          sender,
+          date: new Date().toISOString()
+        };
+
+        prependLetter(newLetter);
+        lettersCache.unshift(newLetter);
+        offset += 1;
+
         document.getElementById('title').value = '';
         document.getElementById('message').value = '';
         document.getElementById('sender').value = '';
@@ -358,6 +369,8 @@
     } catch (err) {
       alert('Failed to send. Try again.');
       resetSendingState();
+    } finally {
+      isSending = false;
     }
   }
 
@@ -369,10 +382,10 @@
   }
 
   async function fetchLetters(reset = false) {
-    if(isLoading || allLoaded) return;
+    if (isLoading || allLoaded) return;
     isLoading = true;
 
-    if(reset) {
+    if (reset) {
       offset = 0;
       document.getElementById('lettersContainer').innerHTML = '';
       document.getElementById('loadMoreBtn').style.display = 'none';
@@ -389,29 +402,23 @@
         return;
       }
 
-      // Sort newest first by date field just in case
-      data.sort((a,b) => new Date(b.date) - new Date(a.date));
-
+      data.sort((a, b) => new Date(b.date) - new Date(a.date));
       lettersCache = lettersCache.concat(data);
-
       renderLetters(data, offset > 0);
-
       offset += data.length;
 
-      // Show Load More if we got PAGE_SIZE items, else hide it
-      document.getElementById('loadMoreBtn').style.display = (data.length === PAGE_SIZE) ? 'block' : 'none';
-
+      document.getElementById('loadMoreBtn').style.display =
+        data.length === PAGE_SIZE ? 'block' : 'none';
     } catch (err) {
       console.error('Fetch error', err);
     }
     isLoading = false;
   }
 
-  // Collapse letters older than 30 days by default
   function shouldCollapse(dateStr) {
     const now = new Date();
     const letterDate = new Date(dateStr);
-    if(isNaN(letterDate)) return false;
+    if (isNaN(letterDate)) return false;
     const diffDays = (now - letterDate) / (1000 * 60 * 60 * 24);
     return diffDays > 30;
   }
@@ -424,10 +431,8 @@
   function formatRelativeTime(dateStr) {
     const now = new Date();
     const then = new Date(dateStr);
-    if (isNaN(then)) return ''; // fallback
-
+    if (isNaN(then)) return '';
     const diffInSeconds = Math.floor((now - then) / 1000);
-
     const minutes = Math.floor(diffInSeconds / 60);
     const hours = Math.floor(diffInSeconds / 3600);
     const days = Math.floor(diffInSeconds / 86400);
@@ -444,7 +449,6 @@
     return `${years} year${years !== 1 ? 's' : ''} ago`;
   }
 
-  // Basic XSS-safe escaping for HTML
   function escapeHTML(s) {
     return s.replace(/[&<>"]/g, c => ({
       '&': '&amp;',
@@ -453,47 +457,21 @@
       '"': '&quot;'
     })[c]);
   }
+
   function escapeHTMLWithBreaks(s) {
     return escapeHTML(s).replace(/\n/g, '<br>');
   }
 
-  // Render letters, append if append === true
   function renderLetters(letters, append = false) {
     const container = document.getElementById('lettersContainer');
     const fragment = document.createDocumentFragment();
 
     letters.forEach(l => {
-      const div = document.createElement('div');
-      div.className = 'letter';
-
-      // Collapse old letters by default
-      if(shouldCollapse(l.date)) {
-        div.classList.add('collapsed');
-        div.setAttribute('title', 'Click to expand/collapse');
-        div.style.cursor = 'pointer';
-        div.addEventListener('click', toggleCollapse);
-      }
-
-      const safeTitle = escapeHTML(l.title);
-      const safeMessage = escapeHTMLWithBreaks(l.message);
-      const safeSender = escapeHTML(l.sender);
-
-      // Cache relative time to avoid recomputation
-      const relativeTime = formatRelativeTime(l.date);
-
-      div.innerHTML = `
-        <div class="letter-header">${safeTitle}</div>
-        <div class="letter-content"><p>${safeMessage}</p></div>
-        <div class="letter-footer">
-          – ${safeSender}<br>
-          <small>${relativeTime}</small>
-        </div>
-      `;
-
+      const div = createLetterElement(l);
       fragment.appendChild(div);
     });
 
-    if(append) {
+    if (append) {
       container.appendChild(fragment);
     } else {
       container.innerHTML = '';
@@ -501,13 +479,43 @@
     }
   }
 
-  document.getElementById('loadMoreBtn').addEventListener('click', () => {
-    fetchLetters();
-  });
+  function prependLetter(letter) {
+    const container = document.getElementById('lettersContainer');
+    const div = createLetterElement(letter);
+    container.insertBefore(div, container.firstChild);
+  }
 
-  // Initial fetch
-  fetchLetters();
+  function createLetterElement(letter) {
+    const div = document.createElement('div');
+    div.className = 'letter';
 
+    if (shouldCollapse(letter.date)) {
+      div.classList.add('collapsed');
+      div.setAttribute('title', 'Click to expand/collapse');
+      div.style.cursor = 'pointer';
+      div.addEventListener('click', toggleCollapse);
+    }
+
+    const safeTitle = escapeHTML(letter.title);
+    const safeMessage = escapeHTMLWithBreaks(letter.message);
+    const safeSender = escapeHTML(letter.sender);
+    const relativeTime = formatRelativeTime(letter.date);
+
+    div.innerHTML = `
+      <div class="letter-header">${safeTitle}</div>
+      <div class="letter-content"><p>${safeMessage}</p></div>
+      <div class="letter-footer">
+        – ${safeSender}<br>
+        <small>${relativeTime}</small>
+      </div>
+    `;
+
+    return div;
+  }
+
+  document.getElementById('loadMoreBtn').addEventListener('click', fetchLetters);
+  fetchLetters(); // Initial load
 </script>
+
 </body>
 </html>
