@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Unread Letters 💌</title>
+  <title>Letters</title>
   <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
@@ -22,6 +26,7 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       z-index: 10;
     }
+
     header h1 {
       margin: 0;
       font-size: 1.8rem;
@@ -57,10 +62,12 @@
     .letter-content {
       padding: 1rem;
     }
+
     .letter-content p {
       margin: 0.6rem 0;
       line-height: 1.5;
     }
+
     .letter-footer {
       text-align: right;
       font-size: 0.9rem;
@@ -76,7 +83,8 @@
       color: #fff;
       border: none;
       border-radius: 50%;
-      width: 56px; height: 56px;
+      width: 56px;
+      height: 56px;
       font-size: 2rem;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       cursor: pointer;
@@ -84,27 +92,39 @@
       align-items: center;
       justify-content: center;
       transition: transform 0.2s;
-      z-index: 20;
+      z-index: 30;
     }
+
     .fab:hover {
       transform: scale(1.1);
     }
 
-    .form-popup {
+    .overlay {
       position: fixed;
-      bottom: 6rem;
-      right: 2rem;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      z-index: 20;
+    }
+
+    .modal, .confirm-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       background: #fff;
-      padding: 1rem;
+      padding: 2rem 1rem 1rem;
       border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      display: none;
-      width: 90%;
+      width: 85%;
       max-width: 320px;
+      display: none;
       z-index: 25;
     }
-    .form-popup input,
-    .form-popup textarea {
+
+    .modal input,
+    .modal textarea {
       width: 100%;
       margin-bottom: 0.6rem;
       padding: 0.6rem;
@@ -112,7 +132,14 @@
       border-radius: 8px;
       font-size: 1rem;
     }
-    .form-popup button {
+
+    .modal textarea {
+      resize: vertical;
+      max-width: 100%;
+    }
+
+    .modal button,
+    .confirm-modal button {
       width: 100%;
       padding: 0.8rem;
       border: none;
@@ -121,7 +148,88 @@
       font-weight: bold;
       border-radius: 8px;
       cursor: pointer;
+      margin-top: 0.5rem;
+      transition: opacity 0.2s ease;
     }
+
+    .modal button.sending {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .confirm-modal {
+      text-align: center;
+    }
+
+    .confirm-modal p {
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .confirm-actions button {
+      flex: 1;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      main {
+        padding: 0.8rem;
+      }
+
+      .letter {
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      }
+
+      .letter-header {
+        font-size: 1rem;
+        padding: 0.6rem 0.8rem;
+      }
+
+      .letter-content {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+      }
+
+      .letter-footer {
+        padding: 0 0.8rem 0.8rem;
+        font-size: 0.85rem;
+      }
+
+      .fab {
+        bottom: 1.2rem;
+        right: 1.2rem;
+        width: 48px;
+        height: 48px;
+        font-size: 1.8rem;
+      }
+    }
+
+    .close-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.7rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #999;
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #e91e63;
+}
+
   </style>
 </head>
 <body>
@@ -132,17 +240,99 @@
     <!-- Letters inserted here -->
   </main>
 
-  <button class="fab" onclick="toggleForm()">+</button>
+  <button class="fab" onclick="openModal()">+</button>
 
-  <div class="form-popup" id="letterForm">
+  <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
+
+  <div class="modal" id="letterModal">
+    <div class="close-btn" onclick="closeAllModals()">✕</div>
     <input type="text" id="title" placeholder="Title" required />
     <textarea id="message" rows="4" placeholder="Your message..." required></textarea>
-    <input type="text" id="sender" placeholder="From (e.g. Anonymous)" />
-    <button onclick="submitLetter()">Send 💌</button>
+    <input type="text" id="sender" placeholder="From (e.g. Anonymous) / Optional" />
+    <button onclick="showConfirm()">Continue ➜</button>
+  </div>
+
+  <div class="confirm-modal" id="confirmModal">
+    <p>The letter is <strong>not editable</strong>. Send it now or later?</p>
+    <div class="confirm-actions">
+      <button id="sendBtn" onclick="confirmSend()">Send 💌</button>
+      <button onclick="closeConfirmModal()">Later</button>
+    </div>
   </div>
 
 <script>
   const API = '/api/letters';
+
+  function openModal() {
+    document.getElementById('letterModal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+  }
+
+  function closeConfirmModal() {
+    document.getElementById('letterModal').style.display = 'block';
+    document.getElementById('confirmModal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'block';
+    resetSendingState();
+  }
+
+   function closeAllModals() {
+    document.getElementById('letterModal').style.display = 'none';
+    document.getElementById('confirmModal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+    resetSendingState();
+  }
+
+  function showConfirm() {
+    const title = document.getElementById('title').value.trim();
+    const msg = document.getElementById('message').value.trim();
+    if (!title || !msg) {
+      alert('Title & Message required.');
+      return;
+    }
+    document.getElementById('confirmModal').style.display = 'block';
+    document.getElementById('letterModal').style.display = 'none';
+  }
+
+  async function confirmSend() {
+    const title = document.getElementById('title').value.trim();
+    const msg = document.getElementById('message').value.trim();
+    const sender = document.getElementById('sender').value.trim() || 'Anonymous';
+
+    const sendBtn = document.getElementById('sendBtn');
+    sendBtn.textContent = 'Sending...';
+    sendBtn.classList.add('sending');
+    sendBtn.disabled = true;
+
+    try {
+      const res = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, message: msg, sender })
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        closeAllModals();
+        fetchLetters();
+        document.getElementById('title').value = '';
+        document.getElementById('message').value = '';
+        document.getElementById('sender').value = '';
+      } else {
+        alert('Error: ' + (result.error || 'unknown'));
+        resetSendingState();
+      }
+    } catch (err) {
+      alert('Failed to send. Try again.');
+      resetSendingState();
+    }
+  }
+
+  function resetSendingState() {
+    const sendBtn = document.getElementById('sendBtn');
+    sendBtn.textContent = 'Send 💌';
+    sendBtn.disabled = false;
+    sendBtn.classList.remove('sending');
+  }
 
   async function fetchLetters() {
     try {
@@ -169,33 +359,10 @@
     });
   }
 
-  function toggleForm() {
-    const f = document.getElementById('letterForm');
-    f.style.display = f.style.display === 'block' ? 'none' : 'block';
-  }
-
-  async function submitLetter() {
-    const title = document.getElementById('title').value.trim();
-    const msg = document.getElementById('message').value.trim();
-    const sender = document.getElementById('sender').value.trim() || 'Anonymous';
-    if (!title || !msg) return alert('Title & Message required.');
-
-    const res = await fetch(API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, message: msg, sender })
-    });
-    const result = await res.json();
-    if (result.success) {
-      toggleForm(); fetchLetters();
-    } else {
-      alert('Error: ' + (result.error || 'unknown'));
-    }
-  }
-
   function escapeHTML(s) {
-    return s.replace(/[&<>"]/g,
-      c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' })[c]);
+    return s.replace(/[&<>"]/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'
+    })[c]);
   }
 
   fetchLetters();
