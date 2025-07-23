@@ -8,7 +8,6 @@
     *, *::before, *::after {
       box-sizing: border-box;
     }
-
     body {
       margin: 0;
       padding: 0;
@@ -16,7 +15,6 @@
       font-family: 'Segoe UI', sans-serif;
       color: #333;
     }
-
     header {
       position: sticky;
       top: 0;
@@ -26,19 +24,16 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       z-index: 10;
     }
-
     header h1 {
       margin: 0;
       font-size: 1.8rem;
       color: #e91e63;
     }
-
     main {
       padding: 1rem;
       max-width: 600px;
       margin: auto;
     }
-
     .letter {
       background: #fff;
       margin-bottom: 1.5rem;
@@ -46,35 +41,47 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
       overflow: hidden;
       transition: transform 0.2s;
+      cursor: default;
     }
-
+    .letter.collapsed .letter-content,
+    .letter.collapsed .letter-footer {
+      max-height: 60px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+    .letter.collapsed .letter-content::after {
+      content: "…";
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      padding-left: 1rem;
+      background: linear-gradient(to right, transparent, #fffaf5 80%);
+      font-weight: bold;
+      color: #e91e63;
+    }
     .letter:hover {
       transform: translateY(-3px);
     }
-
     .letter-header {
       background: #e91e63;
       color: #fff;
       padding: 0.8rem 1rem;
       font-weight: bold;
+      user-select: none;
     }
-
     .letter-content {
       padding: 1rem;
-    }
-
-    .letter-content p {
-      margin: 0.6rem 0;
       line-height: 1.5;
+      white-space: pre-wrap;
     }
-
     .letter-footer {
       text-align: right;
       font-size: 0.9rem;
       padding: 0 1rem 1rem;
       color: #555;
+      user-select: none;
     }
-
     .fab {
       position: fixed;
       bottom: 2rem;
@@ -94,11 +101,9 @@
       transition: transform 0.2s;
       z-index: 30;
     }
-
     .fab:hover {
       transform: scale(1.1);
     }
-
     .overlay {
       position: fixed;
       top: 0; left: 0;
@@ -107,7 +112,6 @@
       display: none;
       z-index: 20;
     }
-
     .modal, .confirm-modal {
       position: fixed;
       top: 50%;
@@ -122,7 +126,6 @@
       display: none;
       z-index: 25;
     }
-
     .modal input,
     .modal textarea {
       width: 100%;
@@ -131,13 +134,12 @@
       border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 1rem;
+      font-family: inherit;
     }
-
     .modal textarea {
       resize: vertical;
       max-width: 100%;
     }
-
     .modal button,
     .confirm-modal button {
       width: 100%;
@@ -150,61 +152,50 @@
       cursor: pointer;
       margin-top: 0.5rem;
       transition: opacity 0.2s ease;
+      font-family: inherit;
     }
-
     .modal button.sending {
       opacity: 0.7;
       cursor: not-allowed;
     }
-
     .confirm-modal {
       text-align: center;
     }
-
     .confirm-modal p {
       margin-bottom: 1rem;
       font-size: 1rem;
     }
-
     .confirm-actions {
       display: flex;
       gap: 0.5rem;
     }
-
     .confirm-actions button {
       flex: 1;
     }
-
     @media (max-width: 600px) {
       header h1 {
         font-size: 1.5rem;
       }
-
       main {
         padding: 0.8rem;
       }
-
       .letter {
         margin-bottom: 1rem;
         border-radius: 10px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       }
-
       .letter-header {
         font-size: 1rem;
         padding: 0.6rem 0.8rem;
       }
-
       .letter-content {
         padding: 0.8rem;
         font-size: 0.95rem;
       }
-
       .letter-footer {
         padding: 0 0.8rem 0.8rem;
         font-size: 0.85rem;
       }
-
       .fab {
         bottom: 1.2rem;
         right: 1.2rem;
@@ -213,23 +204,42 @@
         font-size: 1.8rem;
       }
     }
-
     .close-btn {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.7rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #999;
-  cursor: pointer;
-  z-index: 10;
-  transition: color 0.2s ease;
-}
-
-.close-btn:hover {
-  color: #e91e63;
-}
-
+      position: absolute;
+      top: 0.5rem;
+      right: 0.7rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #999;
+      cursor: pointer;
+      z-index: 10;
+      transition: color 0.2s ease;
+      user-select: none;
+    }
+    .close-btn:hover {
+      color: #e91e63;
+    }
+    #loadMoreBtn {
+      display: block;
+      margin: 1rem auto 3rem;
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+      background: #e91e63;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: background 0.3s;
+      font-family: inherit;
+    }
+    #loadMoreBtn:hover:not(:disabled) {
+      background: #c2185b;
+    }
+    #loadMoreBtn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
@@ -240,19 +250,21 @@
     <!-- Letters inserted here -->
   </main>
 
-  <button class="fab" onclick="openModal()">+</button>
+  <button id="loadMoreBtn" style="display:none" aria-label="Load more letters">Load More</button>
+
+  <button class="fab" onclick="openModal()" aria-label="Add new letter">+</button>
 
   <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
 
-  <div class="modal" id="letterModal">
-    <div class="close-btn" onclick="closeAllModals()">✕</div>
-    <input type="text" id="title" placeholder="Title" required />
-    <textarea id="message" rows="4" placeholder="Your message..." required></textarea>
+  <div class="modal" id="letterModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="close-btn" onclick="closeAllModals()" role="button" aria-label="Close modal">✕</div>
+    <input type="text" id="title" placeholder="Title" required aria-required="true" />
+    <textarea id="message" rows="4" placeholder="Your message..." required aria-required="true"></textarea>
     <input type="text" id="sender" placeholder="From (e.g. Anonymous) / Optional" />
     <button onclick="showConfirm()">Continue ➜</button>
   </div>
 
-  <div class="confirm-modal" id="confirmModal">
+  <div class="confirm-modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
     <p>The letter is <strong>not editable</strong>. Send it now or later?</p>
     <div class="confirm-actions">
       <button id="sendBtn" onclick="confirmSend()">Send 💌</button>
@@ -261,7 +273,24 @@
   </div>
 
 <script>
-  const API = '/api/letters';
+  const API_BASE = '/api/letters';
+  const PAGE_SIZE = 10;
+
+  let offset = 0;
+  let isLoading = false;
+  let allLoaded = false;
+  let lettersCache = []; // Cache letters for relative time updates
+  let fetchTimeout;
+
+  function debounceFetchLetters() {
+    if(fetchTimeout) clearTimeout(fetchTimeout);
+    fetchTimeout = setTimeout(() => {
+      offset = 0;
+      allLoaded = false;
+      lettersCache = [];
+      fetchLetters(true);
+    }, 300);
+  }
 
   function openModal() {
     document.getElementById('letterModal').style.display = 'block';
@@ -275,7 +304,7 @@
     resetSendingState();
   }
 
-   function closeAllModals() {
+  function closeAllModals() {
     document.getElementById('letterModal').style.display = 'none';
     document.getElementById('confirmModal').style.display = 'none';
     document.getElementById('overlay').style.display = 'none';
@@ -304,7 +333,7 @@
     sendBtn.disabled = true;
 
     try {
-      const res = await fetch(API, {
+      const res = await fetch(API_BASE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, message: msg, sender })
@@ -313,7 +342,12 @@
       const result = await res.json();
       if (result.success) {
         closeAllModals();
-        fetchLetters();
+        // Reset pagination and reload from scratch
+        offset = 0;
+        allLoaded = false;
+        lettersCache = [];
+        fetchLetters(true);
+        // Clear inputs
         document.getElementById('title').value = '';
         document.getElementById('message').value = '';
         document.getElementById('sender').value = '';
@@ -334,27 +368,63 @@
     sendBtn.classList.remove('sending');
   }
 
-  async function fetchLetters() {
+  async function fetchLetters(reset = false) {
+    if(isLoading || allLoaded) return;
+    isLoading = true;
+
+    if(reset) {
+      offset = 0;
+      document.getElementById('lettersContainer').innerHTML = '';
+      document.getElementById('loadMoreBtn').style.display = 'none';
+    }
+
     try {
-      const res = await fetch(API);
+      const res = await fetch(`${API_BASE}?offset=${offset}&limit=${PAGE_SIZE}`);
       const data = await res.json();
 
-      const letters = Array.isArray(data) ? data : [];
+      if (!Array.isArray(data) || data.length === 0) {
+        allLoaded = true;
+        document.getElementById('loadMoreBtn').style.display = 'none';
+        isLoading = false;
+        return;
+      }
 
-      // Sort from newest to oldest using `date` field
-      letters.sort((a, b) => new Date(b.date) - new Date(a.date));
+      // Sort newest first by date field just in case
+      data.sort((a,b) => new Date(b.date) - new Date(a.date));
 
-      renderLetters(letters);
-    } catch (e) {
-      console.error('Fetch error', e);
+      lettersCache = lettersCache.concat(data);
+
+      renderLetters(data, offset > 0);
+
+      offset += data.length;
+
+      // Show Load More if we got PAGE_SIZE items, else hide it
+      document.getElementById('loadMoreBtn').style.display = (data.length === PAGE_SIZE) ? 'block' : 'none';
+
+    } catch (err) {
+      console.error('Fetch error', err);
     }
+    isLoading = false;
   }
 
+  // Collapse letters older than 30 days by default
+  function shouldCollapse(dateStr) {
+    const now = new Date();
+    const letterDate = new Date(dateStr);
+    if(isNaN(letterDate)) return false;
+    const diffDays = (now - letterDate) / (1000 * 60 * 60 * 24);
+    return diffDays > 30;
+  }
+
+  function toggleCollapse(event) {
+    const letterDiv = event.currentTarget;
+    letterDiv.classList.toggle('collapsed');
+  }
 
   function formatRelativeTime(dateStr) {
     const now = new Date();
     const then = new Date(dateStr);
-    if (isNaN(then)) return ''; // Fallback for invalid date
+    if (isNaN(then)) return ''; // fallback
 
     const diffInSeconds = Math.floor((now - then) / 1000);
 
@@ -374,43 +444,70 @@
     return `${years} year${years !== 1 ? 's' : ''} ago`;
   }
 
+  // Basic XSS-safe escaping for HTML
+  function escapeHTML(s) {
+    return s.replace(/[&<>"]/g, c => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;'
+    })[c]);
+  }
+  function escapeHTMLWithBreaks(s) {
+    return escapeHTML(s).replace(/\n/g, '<br>');
+  }
 
-  function renderLetters(letters) {
+  // Render letters, append if append === true
+  function renderLetters(letters, append = false) {
     const container = document.getElementById('lettersContainer');
-    container.innerHTML = '';
-
     const fragment = document.createDocumentFragment();
 
     letters.forEach(l => {
       const div = document.createElement('div');
       div.className = 'letter';
+
+      // Collapse old letters by default
+      if(shouldCollapse(l.date)) {
+        div.classList.add('collapsed');
+        div.setAttribute('title', 'Click to expand/collapse');
+        div.style.cursor = 'pointer';
+        div.addEventListener('click', toggleCollapse);
+      }
+
+      const safeTitle = escapeHTML(l.title);
+      const safeMessage = escapeHTMLWithBreaks(l.message);
+      const safeSender = escapeHTML(l.sender);
+
+      // Cache relative time to avoid recomputation
+      const relativeTime = formatRelativeTime(l.date);
+
       div.innerHTML = `
-        <div class="letter-header">${escapeHTML(l.title)}</div>
-        <div class="letter-content"><p>${escapeHTMLWithBreaks(l.message)}</p></div>
+        <div class="letter-header">${safeTitle}</div>
+        <div class="letter-content"><p>${safeMessage}</p></div>
         <div class="letter-footer">
-          – ${escapeHTML(l.sender)}<br>
-          <small>${formatRelativeTime(l.date)}</small>
+          – ${safeSender}<br>
+          <small>${relativeTime}</small>
         </div>
       `;
+
       fragment.appendChild(div);
     });
 
-    container.appendChild(fragment);
+    if(append) {
+      container.appendChild(fragment);
+    } else {
+      container.innerHTML = '';
+      container.appendChild(fragment);
+    }
   }
 
+  document.getElementById('loadMoreBtn').addEventListener('click', () => {
+    fetchLetters();
+  });
 
-  function escapeHTMLWithBreaks(s) {
-    return escapeHTML(s).replace(/\n/g, '<br>');
-  }
-
-
-  function escapeHTML(s) {
-    return s.replace(/[&<>"]/g, c => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'
-    })[c]);
-  }
-
+  // Initial fetch
   fetchLetters();
+
 </script>
 </body>
 </html>
