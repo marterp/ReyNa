@@ -338,26 +338,71 @@
     try {
       const res = await fetch(API);
       const data = await res.json();
-      renderLetters(Array.isArray(data) ? data : []);
+
+      const letters = Array.isArray(data) ? data : [];
+
+      // Sort from newest to oldest using `date` field
+      letters.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      renderLetters(letters);
     } catch (e) {
       console.error('Fetch error', e);
     }
   }
 
+
+  function formatRelativeTime(dateStr) {
+    const now = new Date();
+    const then = new Date(dateStr);
+    if (isNaN(then)) return ''; // Fallback for invalid date
+
+    const diffInSeconds = Math.floor((now - then) / 1000);
+
+    const minutes = Math.floor(diffInSeconds / 60);
+    const hours = Math.floor(diffInSeconds / 3600);
+    const days = Math.floor(diffInSeconds / 86400);
+    const months = Math.floor(diffInSeconds / (30 * 86400));
+    const years = Math.floor(diffInSeconds / (365 * 86400));
+
+    if (diffInSeconds < 5) return `just now`;
+    if (diffInSeconds < 60) return `${diffInSeconds} second${diffInSeconds !== 1 ? 's' : ''} ago`;
+    if (minutes < 60) return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+    if (hours < 24) return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+    if (days < 2) return `yesterday`;
+    if (days < 30) return `${days} day${days !== 1 ? 's' : ''} ago`;
+    if (months < 12) return `${months} month${months !== 1 ? 's' : ''} ago`;
+    return `${years} year${years !== 1 ? 's' : ''} ago`;
+  }
+
+
   function renderLetters(letters) {
     const container = document.getElementById('lettersContainer');
     container.innerHTML = '';
+
+    const fragment = document.createDocumentFragment();
+
     letters.forEach(l => {
       const div = document.createElement('div');
       div.className = 'letter';
       div.innerHTML = `
         <div class="letter-header">${escapeHTML(l.title)}</div>
-        <div class="letter-content"><p>${escapeHTML(l.message)}</p></div>
-        <div class="letter-footer">– ${escapeHTML(l.sender)}</div>
+        <div class="letter-content"><p>${escapeHTMLWithBreaks(l.message)}</p></div>
+        <div class="letter-footer">
+          – ${escapeHTML(l.sender)}<br>
+          <small>${formatRelativeTime(l.date)}</small>
+        </div>
       `;
-      container.appendChild(div);
+      fragment.appendChild(div);
     });
+
+    container.appendChild(fragment);
   }
+
+
+  function escapeHTMLWithBreaks(s) {
+    return escapeHTML(s).replace(/\n/g, '<br>');
+  }
+
 
   function escapeHTML(s) {
     return s.replace(/[&<>"]/g, c => ({
