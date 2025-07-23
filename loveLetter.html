@@ -1,181 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ReyNa — Love Letters 💌</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UnRead Letters 💌</title>
   <style>
     body {
-      font-family: 'Georgia', serif;
-      background: #fffafc;
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #fff0f5 0%, #ffe0ec 100%);
+      padding: 4em 1em 2em;
     }
 
-    header {
-      text-align: center;
-      padding: 2rem 1rem 1rem;
+    .back-arrow {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 1.8rem;
+      text-decoration: none;
+      color: #ff4b7d;
+      background: #fff;
+      border-radius: 50%;
+      padding: 0.3em 0.6em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 10;
+      transition: background 0.3s;
     }
 
-    header h1 {
-      font-size: 2.2rem;
-      color: #e91e63;
-      margin: 0;
+    .back-arrow:hover {
+      background: #ffe6ee;
     }
 
-    header p {
-      font-style: italic;
-      color: #555;
-    }
-
-    .letters {
+    .container {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      padding: 1rem;
-      max-width: 600px;
+      align-items: center;
+      gap: 2em;
+      max-width: 500px;
       margin: auto;
     }
 
-    .letter {
+    .envelope {
       background: #fff;
-      border-radius: 12px;
-      padding: 1rem;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
+      width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(255, 75, 125, 0.15);
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.4s ease;
+      margin-top: 50px;
+      margin-bottom: 100px;
     }
 
-    .letter:hover {
-      transform: translateY(-2px);
+    .flap {
+      background: #ff4b7d;
+      height: 60px;
+      width: 100%;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
     }
 
-    .letter h3 {
-      margin: 0;
-      color: #c2185b;
+    .letter-content {
+      padding: 1.5em;
+      animation: slideDown 0.6s ease;
     }
 
-    .letter p {
-      margin: 0.5rem 0;
+    .letter-content h2 {
+      color: #ff4b7d;
+      margin-bottom: 0.5em;
+      font-size: 1.5rem;
     }
 
-    .letter small {
-      display: block;
-      text-align: right;
-      color: #888;
+    .letter-content p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #444;
     }
 
-    .floating-btn {
+    @keyframes slideDown {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .floating-plus {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #e91e63;
-      color: white;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff4b7d;
+      color: #fff;
       border: none;
+      width: 60px;
+      height: 60px;
       font-size: 2rem;
-      padding: 0.4rem 1rem;
       border-radius: 50%;
+      box-shadow: 0 8px 20px rgba(255, 75, 125, 0.3);
       cursor: pointer;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+      z-index: 20;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .floating-plus:hover {
+      background: #ff2c67;
+      transform: translateX(-50%) scale(1.05);
     }
 
     .form-popup {
       position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .form-container {
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
       background: #fff;
-      padding: 1.5rem;
       border-radius: 12px;
-      max-width: 400px;
-      width: 90%;
+      padding: 1.5em;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      display: none;
+      z-index: 30;
     }
 
-    .form-container input,
-    .form-container textarea {
+    .form-popup input,
+    .form-popup textarea {
       width: 100%;
-      margin-bottom: 1rem;
-      padding: 0.5rem;
-      border-radius: 6px;
+      margin: 0.5em 0;
+      padding: 0.5em;
       border: 1px solid #ccc;
+      border-radius: 8px;
     }
 
-    .form-container button {
-      background: #e91e63;
-      color: white;
+    .form-popup button {
+      background: #ff4b7d;
+      color: #fff;
       border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
+      padding: 0.6em 1em;
+      border-radius: 8px;
       cursor: pointer;
-    }
-
-    @media screen and (min-width: 768px) {
-      header h1 {
-        font-size: 3rem;
-      }
+      margin-top: 0.5em;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>ReyNa</h1>
-    <p>Love of my life – Lablab</p>
-  </header>
+  <a href="index.html" class="back-arrow">←</a>
 
-  <main class="letters" id="letters"></main>
+  <div class="container" id="lettersContainer">
+    <!-- Letters will be dynamically inserted here -->
+  </div>
 
-  <button class="floating-btn" onclick="openForm()">+</button>
+  <!-- Add Letter Button -->
+  <button class="floating-plus" onclick="toggleForm()">+</button>
 
-  <div class="form-popup" id="formPopup">
-    <div class="form-container">
-      <h3>Send a Letter 💌</h3>
-      <input type="text" id="title" placeholder="Title" required>
-      <textarea id="message" rows="4" placeholder="Message" required></textarea>
-      <input type="text" id="sender" placeholder="From" required>
-      <button onclick="submitLetter()">Send</button>
-    </div>
+  <!-- Letter Form -->
+  <div class="form-popup" id="letterForm">
+    <input type="text" id="title" placeholder="Title" required />
+    <textarea id="message" rows="4" placeholder="Your message" required></textarea>
+    <input type="text" id="sender" placeholder="From (e.g., Anonymous)"/>
+    <button onclick="submitLetter()">Send 💌</button>
   </div>
 
   <script>
-    const FORM = document.getElementById('formPopup');
-    const LETTERS_DIV = document.getElementById('letters');
-    const SHEET_API = 'https://script.google.com/macros/s/AKfycbyptP0IcMK5ZE9PlX595rWFU_E0KpDGt4o_ueyFJ1g0l_Y_5IFNQR-8m90Cigcvwe8fOg/exec'; // For GET only
-    const POST_API = '/api/postLetter'; // Vercel proxy to post
-
-    function openForm() {
-      FORM.style.display = 'flex';
-    }
-
-    function closeForm() {
-      FORM.style.display = 'none';
-    }
+    const SCRIPT_URL = '/api/letters'; // Use your secure Vercel API route
 
     async function fetchLetters() {
-      try {
-        const res = await fetch(SHEET_API);
-        const data = await res.json();
+      const res = await fetch(SCRIPT_URL);
+      const data = await res.json();
 
-        LETTERS_DIV.innerHTML = "";
-        data.reverse().forEach(entry => {
-          const el = document.createElement('div');
-          el.className = 'letter';
-          el.innerHTML = `
-            <h3>${entry.title}</h3>
-            <p>${entry.message}</p>
-            <small>— ${entry.sender || "Anonymous"}</small>
-          `;
-          LETTERS_DIV.appendChild(el);
-        });
+      const container = document.getElementById('lettersContainer');
+      container.innerHTML = '';
 
-      } catch (err) {
-        LETTERS_DIV.innerHTML = "<p>Error loading letters.</p>";
-      }
+      data.letters?.forEach(letter => {
+        const div = document.createElement('div');
+        div.className = 'envelope';
+        div.innerHTML = `
+          <div class="flap"></div>
+          <div class="letter-content">
+            <h2>${letter.title}</h2>
+            <p>${letter.message}</p>
+            <p style="text-align:right;">– ${letter.sender}</p>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function toggleForm() {
+      const form = document.getElementById('letterForm');
+      form.style.display = form.style.display === 'block' ? 'none' : 'block';
     }
 
     async function submitLetter() {
@@ -183,29 +197,25 @@
       const message = document.getElementById('message').value.trim();
       const sender = document.getElementById('sender').value.trim();
 
-      if (!title || !message) return alert("Please fill in all fields");
+      if (!title || !message || !sender) return alert('All fields are required.');
 
-      const res = await fetch(POST_API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, message, sender })
       });
 
-      const data = await res.json();
-      if (data.status === "ok") {
-        closeForm();
-        fetchLetters();
+      const result = await res.json();
+      if (result.success) {
+        toggleForm();
+        fetchLetters(); // reload
       } else {
-        alert("Failed to send: " + data.server);
+        alert('Failed to send letter.');
       }
     }
 
-    window.addEventListener("click", (e) => {
-      if (e.target === FORM) closeForm();
-    });
-
+    // Initial fetch
     fetchLetters();
   </script>
-
 </body>
 </html>
