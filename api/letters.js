@@ -51,7 +51,11 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     try {
-      const response = await fetch(SCRIPT_URL);
+      const url = new URL(SCRIPT_URL);
+      // Pass offset and limit if they exist
+      Object.entries(req.query).forEach(([key, val]) => url.searchParams.set(key, val));
+
+      const response = await fetch(url.toString());
       if (!response.ok) {
         const errorText = await response.text();
         return res.status(500).json({ error: 'Upstream error', details: errorText });
@@ -62,7 +66,4 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'GET failed', details: err.message });
     }
   }
-
-  res.setHeader('Allow', ['GET', 'POST']);
-  return res.status(405).end(`Method ${req.method} Not Allowed`);
 }

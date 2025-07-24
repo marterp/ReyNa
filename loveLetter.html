@@ -529,8 +529,9 @@
 
     if (reset) {
       offset = 0;
-      document.getElementById('lettersContainer').innerHTML = '';
+      lettersCache = [];
       allLoaded = false;
+      document.getElementById('lettersContainer').innerHTML = '';
     }
 
     showSkeletons();
@@ -543,6 +544,21 @@
 
       if (!Array.isArray(data) || data.length === 0) {
         allLoaded = true;
+        document.getElementById('loadMoreBtn').style.display = 'none';
+
+        const container = document.getElementById('lettersContainer');
+        const existingMsg = document.getElementById('noMoreLettersMsg');
+        if (existingMsg) existingMsg.remove();
+
+        const msgDiv = document.createElement('div');
+        msgDiv.id = 'noMoreLettersMsg';
+        msgDiv.textContent = '📬 No more letters to load.';
+        msgDiv.style.textAlign = 'center';
+        msgDiv.style.margin = '20px 0';
+        msgDiv.style.fontStyle = 'italic';
+        msgDiv.style.color = '#777';
+        container.appendChild(msgDiv);
+
         isLoading = false;
         return;
       }
@@ -558,16 +574,16 @@
       }
 
       offset += data.length;
+      document.getElementById('loadMoreBtn').style.display = 'block';
     } catch (err) {
       console.error('Fetch error', err);
       removeSkeletons();
       showToast('Failed to load letters. Please try again.', 'error');
     }
 
-    document.getElementById('loadMoreBtn').style.display = allLoaded ? 'none' : 'block';
-
     isLoading = false;
   }
+
 
 
 
