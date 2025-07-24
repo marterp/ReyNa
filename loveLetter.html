@@ -306,6 +306,7 @@
 
   <div class="modal" id="letterModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="close-btn" onclick="closeAllModals()" role="button" aria-label="Close modal">✕</div>
+    <h2 id="modalTitle" style="display:none;">New Letter</h2>
     <input type="text" id="title" placeholder="Title" required aria-required="true" />
     <textarea id="message" rows="4" placeholder="Your message..." required aria-required="true"></textarea>
     <input type="text" id="sender" placeholder="From (e.g. Anonymous) / Optional" />
@@ -314,6 +315,7 @@
   </div>
 
   <div class="confirm-modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <h2 id="confirmTitle" style="display:none;">Confirm Sending</h2>
     <p>The letter is <strong>not editable</strong>. Send it now or later?</p>
     <div class="confirm-actions">
       <button id="sendBtn" onclick="confirmSend()">Send 💌</button>
