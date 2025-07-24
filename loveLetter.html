@@ -333,7 +333,7 @@
     <div class="flex justify-around items-center relative h-16">
       
       <!-- Home -->
-      <button class="flex flex-col items-center text-pink-500" onclick="navigateTo('homePage')">
+      <button class="nav-btn flex flex-col items-center text-gray-400" onclick="navigateTo('homePage')">
         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" />
         </svg>
@@ -341,11 +341,11 @@
       </button>
 
       <!-- Letters -->
-      <button class="flex flex-col items-center text-gray-400" onclick="navigateTo('lettersContainer')">
+      <button class="nav-btn flex flex-col items-center text-gray-400" onclick="navigateTo('lettersContainer')">
         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M21 10H7a2 2 0 00-2 2v4a2 2 0 002 2h14v-6a2 2 0 00-2-2zM3 8h18a2 2 0 012 2v6a2 2 0 01-2 2H3v-6a2 2 0 012-2z" />
         </svg>
-        <span class="text-xs">Le</span>
+        <span class="text-xs">Letters</span>
       </button>
 
       <!-- Add (center button) -->
@@ -357,18 +357,18 @@
       </button>
 
       <!-- Notifications -->
-      <button class="flex flex-col items-center text-gray-400">
+      <button class="nav-btn flex flex-col items-center text-gray-400">
         <div class="relative">
           <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" onclick="navigateTo('notificationsPage')">
             <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
-          <span class="absolute top-0 right-0 bg-red-500 text-white text-[10px] px-1 rounded-full">2</span>
+          <span class="absolute top-0 right-0 bg-red-500 text-white text-[10px] px-1 rounded-full"></span>
         </div>
         <span class="text-xs">Alerts</span>
       </button>
 
       <!-- Account -->
-      <button class="flex flex-col items-center text-gray-400" onclick="navigateTo('accountPage')">
+      <button class="nav-btn flex flex-col items-center text-gray-400" onclick="navigateTo('accountPage')">
         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M5.121 17.804A7 7 0 0112 15a7 7 0 016.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
