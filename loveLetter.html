@@ -533,13 +533,13 @@
       allLoaded = false;
     }
 
-    showSkeletons(); // 🆕 Show loading UI
+    showSkeletons();
 
     try {
       const res = await fetch(`${API_BASE}?offset=${offset}&limit=${PAGE_SIZE}`);
       const data = await res.json();
 
-      removeSkeletons(); // 🆕 Remove loaders
+      removeSkeletons();
 
       if (!Array.isArray(data) || data.length === 0) {
         allLoaded = true;
@@ -548,20 +548,27 @@
       }
 
       data.sort((a, b) => new Date(b.date) - new Date(a.date));
-      lettersCache = lettersCache.concat(data);
-      renderLetters(data, offset > 0);
+
+      if (reset) {
+        lettersCache = data;
+        renderLetters(data, false);
+      } else {
+        lettersCache = lettersCache.concat(data);
+        renderLetters(data, true);
+      }
+
       offset += data.length;
     } catch (err) {
       console.error('Fetch error', err);
-      removeSkeletons(); // In case of error
-      showToast('Failed to load letters. Please try again.', 'error'); // Add this line
+      removeSkeletons();
+      showToast('Failed to load letters. Please try again.', 'error');
     }
-
 
     document.getElementById('loadMoreBtn').style.display = allLoaded ? 'none' : 'block';
 
     isLoading = false;
   }
+
 
 
   function shouldCollapse(dateStr) {
@@ -707,13 +714,14 @@
 
   document.getElementById('loadMoreBtn').addEventListener('click', fetchLetters);
 
-  
+
+
   window.addEventListener('scroll', () => {
-  const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 200;
-  if (nearBottom && !isLoading && !allLoaded) {
-    fetchLetters(false);
-  }
-});
+    const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 200;
+    if (nearBottom && !isLoading && !allLoaded) {
+      fetchLetters(false);  
+    }
+  });
 
   fetchLetters(); // Initial load
 </script>
