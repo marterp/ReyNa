@@ -300,26 +300,30 @@
     <h1 class="text-xl font-bold text-pink-500">Unread Letters 💌</h1>
   </header>
 
-  <!-- Page Content -->
+   <main id="lettersContainer" class="flex-grow p-4">
+    <!-- Letters inserted here -->
+   </main>
+
+  <!-- Page Content 
   <main class="flex-grow p-4">
-    <!-- Home Page -->
+    <!-- Home Page 
     <section id="homePage" class="page active">
       <h2 class="text-lg font-semibold">Welcome Home</h2>
       <p>This is your dashboard or intro page.</p>
     </section>
 
-    <!-- Letters Page -->
+    <!-- Letters Page 
     <section id="lettersContainer" class="page">
-    <!-- Letters inserted here -->
+
     </section>
 
-    <!-- Notifications Page -->
+    <!-- Notifications Page 
     <section id="notificationsPage" class="page">
       <h2 class="text-lg font-semibold mb-4">Notifications</h2>
       <div class="bg-white p-4 rounded shadow mb-2">📬 Coming soon!</div>
     </section>
 
-    <!-- Account Page -->
+    <!-- Account Page
     <section id="accountPage" class="page">
       <h2 class="text-lg font-semibold mb-4">Account Settings</h2>
       <p class="mb-2">Name: <strong>Anonymous</strong></p>
@@ -328,11 +332,11 @@
     </section>
   </main>
 
-<!-- Bottom Navigation Bar -->
+<!-- Bottom Navigation Bar
   <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-md">
     <div class="flex justify-around items-center relative h-16">
       
-      <!-- Home -->
+      <!-- Home 
       <button class="nav-btn flex flex-col items-center text-gray-400" onclick="navigateTo('homePage')">
         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" />
@@ -340,7 +344,7 @@
         <span class="text-xs">Home</span>
       </button>
 
-      <!-- Letters -->
+      <!-- Letters 
       <button class="nav-btn flex flex-col items-center text-gray-400" onclick="navigateTo('lettersContainer')">
         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M21 10H7a2 2 0 00-2 2v4a2 2 0 002 2h14v-6a2 2 0 00-2-2zM3 8h18a2 2 0 012 2v6a2 2 0 01-2 2H3v-6a2 2 0 012-2z" />
@@ -348,15 +352,14 @@
         <span class="text-xs">Letters</span>
       </button>
 
-      <!-- Add (center button) -->
+      <!-- Add (center button) 
       <button class="absolute -top-6 bg-pink-500 text-white p-4 rounded-full shadow-lg hover:scale-105 transition-transform" onclick="openModal()" aria-label="Add new letter">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
           <path d="M12 4v16m8-8H4" />
-          <button class="fab" onclick="openModal()" aria-label="Add new letter">+</button>
         </svg>
       </button>
 
-      <!-- Notifications -->
+      <!-- Notifications 
       <button class="nav-btn flex flex-col items-center text-gray-400">
         <div class="relative">
           <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" onclick="navigateTo('notificationsPage')">
@@ -367,7 +370,7 @@
         <span class="text-xs">Alerts</span>
       </button>
 
-      <!-- Account -->
+      <!-- Account
       <button class="nav-btn flex flex-col items-center text-gray-400" onclick="navigateTo('accountPage')">
         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M5.121 17.804A7 7 0 0112 15a7 7 0 016.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -375,9 +378,9 @@
         <span class="text-xs">Account</span>
       </button>
     </div>
-  </nav>
+  </nav>-->
 
-  <!-- JavaScript to handle navigation -->
+  <!-- JavaScript to handle navigation
   <script>
     function navigateTo(pageId) {
       document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -388,7 +391,9 @@
       const btn = [...document.querySelectorAll('.nav-btn')].find(b => b.getAttribute('onclick')?.includes(pageId));
       if (btn) btn.classList.add('text-pink-500');
     }
-  </script>
+  </script> -->
+
+  <button class="fab" onclick="openModal()" aria-label="Add new letter">+</button>
 
   <button id="loadMoreBtn" style="display:none" aria-label="Load more letters">Load More</button>
 
