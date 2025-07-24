@@ -7,15 +7,44 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
+    const { title, message, sender, nickname } = req.body;
+
+    if (nickname) {
+      return res.status(400).json({ error: 'Bot detected' });
+    }
+
+    const trimmedTitle = title?.trim();
+    const trimmedMessage = message?.trim();
+    const trimmedSender = sender?.trim();
+
+    if (
+      !trimmedTitle ||
+      !trimmedMessage ||
+      typeof trimmedTitle !== 'string' ||
+      typeof trimmedMessage !== 'string' ||
+      trimmedTitle.length > 100 ||
+      trimmedMessage.length > 1000 ||
+      (trimmedSender && trimmedSender.length > 50)
+    ) {
+      return res.status(400).json({ error: 'Invalid input' });
+    }
+
     try {
       const response = await fetch(SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...req.body, apiKey: API_KEY })
+        body: JSON.stringify({ title: trimmedTitle, message: trimmedMessage, sender: trimmedSender, apiKey: API_KEY }),
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        return res.status(500).json({ error: 'Upstream error', details: errorText });
+      }
+
       const result = await response.json();
       return res.status(200).json(result);
     } catch (err) {
+      console.error('POST error:', err);
       return res.status(500).json({ error: 'POST failed', details: err.message });
     }
   }
@@ -23,6 +52,10 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const response = await fetch(SCRIPT_URL);
+      if (!response.ok) {
+        const errorText = await response.text();
+        return res.status(500).json({ error: 'Upstream error', details: errorText });
+      }
       const data = await response.json();
       return res.status(200).json(data);
     } catch (err) {
@@ -31,5 +64,5 @@ export default async function handler(req, res) {
   }
 
   res.setHeader('Allow', ['GET', 'POST']);
-  res.status(405).end(`Method ${req.method} Not Allowed`);
+  return res.status(405).end(`Method ${req.method} Not Allowed`);
 }

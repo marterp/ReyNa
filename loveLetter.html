@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Letters</title>
+  <title>Unread Letters 💌</title>
+
+  <meta name="description" content="Read and send unread letters anonymously or with your name. A simple, elegant letters app.">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Unread Letters 💌">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -172,6 +182,44 @@
     .confirm-actions button {
       flex: 1;
     }
+    .skeleton {
+      background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+      background-size: 400% 100%;
+      animation: skeleton-loading 1.2s infinite;
+      border-radius: 12px;
+    }
+
+    @keyframes skeleton-loading {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+
+    .skeleton-letter {
+      height: 100px;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-error {
+      border-color: #e91e63;
+      box-shadow: 0 0 5px #e91e63;
+    }
+
+    .modal,
+    .confirm-modal {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .modal.show,
+    .confirm-modal.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: auto;
+    }
+
+
     @media (max-width: 600px) {
       header h1 {
         font-size: 1.5rem;
@@ -261,6 +309,7 @@
     <input type="text" id="title" placeholder="Title" required aria-required="true" />
     <textarea id="message" rows="4" placeholder="Your message..." required aria-required="true"></textarea>
     <input type="text" id="sender" placeholder="From (e.g. Anonymous) / Optional" />
+    <input type="text" id="nickname" name="nickname" style="display:none" autocomplete="off" tabindex="-1" />
     <button onclick="showConfirm()">Continue ➜</button>
   </div>
 
@@ -282,6 +331,7 @@
   let lettersCache = [];
   let fetchTimeout;
   let isSending = false;
+  let currentTrap = null;
 
   function debounceFetchLetters() {
     if (fetchTimeout) clearTimeout(fetchTimeout);
@@ -293,9 +343,51 @@
     }, 300);
   }
 
+
+  function trapFocus(modal) {
+    if (currentTrap) {
+      currentTrap.cleanup();
+    }
+
+    const focusableElements = modal.querySelectorAll('input, button, textarea, [tabindex]:not([tabindex="-1"])');
+    const firstEl = focusableElements[0];
+    const lastEl = focusableElements[focusableElements.length - 1];
+
+    function handleKeyDown(e) {
+      if (e.key === 'Tab') {
+        if (e.shiftKey) { // Shift + Tab
+          if (document.activeElement === firstEl) {
+            e.preventDefault();
+            lastEl.focus();
+          }
+        } else { // Tab
+          if (document.activeElement === lastEl) {
+            e.preventDefault();
+            firstEl.focus();
+          }
+        }
+      }
+    }
+
+    modal.addEventListener('keydown', handleKeyDown);
+    firstEl.focus();
+
+    currentTrap = {
+      cleanup() {
+        modal.removeEventListener('keydown', handleKeyDown);
+        currentTrap = null;
+      }
+    };
+  }
+
+
   function openModal() {
-    document.getElementById('letterModal').style.display = 'block';
+    const modal = document.getElementById('letterModal');
+    modal.style.display = 'block';
+    modal.classList.add('show');
     document.getElementById('overlay').style.display = 'block';
+    trapFocus(modal);
+    document.body.style.overflow = 'hidden';
   }
 
   function closeConfirmModal() {
@@ -306,22 +398,55 @@
   }
 
   function closeAllModals() {
-    document.getElementById('letterModal').style.display = 'none';
-    document.getElementById('confirmModal').style.display = 'none';
+    const modals = document.querySelectorAll('.modal, .confirm-modal');
+    modals.forEach(m => {
+      m.classList.remove('show');
+      m.style.display = 'none';
+    });
     document.getElementById('overlay').style.display = 'none';
     resetSendingState();
+    document.body.style.overflow = ''; // restore scroll
+    if (currentTrap) currentTrap.cleanup();
   }
 
   function showConfirm() {
-    const title = document.getElementById('title').value.trim();
-    const msg = document.getElementById('message').value.trim();
+    const titleInput = document.getElementById('title');
+    const msgInput = document.getElementById('message');
+    const title = titleInput.value.trim();
+    const msg = msgInput.value.trim();
+
+    titleInput.classList.remove('input-error');
+    msgInput.classList.remove('input-error');
+
     if (!title || !msg) {
-      alert('Title & Message required.');
+      if (!title) titleInput.classList.add('input-error');
+      if (!msg) msgInput.classList.add('input-error');
+
+      [titleInput, msgInput].forEach(input => {
+        if (input.classList.contains('input-error')) {
+          input.animate([
+            { transform: 'translateX(0)' },
+            { transform: 'translateX(-8px)' },
+            { transform: 'translateX(8px)' },
+            { transform: 'translateX(0)' }
+          ], { duration: 300, easing: 'ease-in-out' });
+        }
+      });
+
+      if (!title) titleInput.focus();
+      else msgInput.focus();
       return;
     }
+
     document.getElementById('confirmModal').style.display = 'block';
-    document.getElementById('letterModal').style.display = 'none';
+    document.getElementById('confirmModal').classList.add('show');
+    const letterModal = document.getElementById('letterModal');
+    letterModal.classList.remove('show');
+    letterModal.style.display = 'none';
+    document.getElementById('overlay').style.display = 'block';
+    trapFocus(document.getElementById('confirmModal'));
   }
+
 
   async function confirmSend() {
     if (isSending) return;
@@ -330,6 +455,7 @@
     const title = document.getElementById('title').value.trim();
     const msg = document.getElementById('message').value.trim();
     const sender = document.getElementById('sender').value.trim() || 'Anonymous';
+    const nickname = document.getElementById('nickname').value.trim();
 
     const sendBtn = document.getElementById('sendBtn');
     sendBtn.textContent = 'Sending...';
@@ -340,7 +466,7 @@
       const res = await fetch(API_BASE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, message: msg, sender })
+        body: JSON.stringify({ title, message: msg, sender, nickname })
       });
 
       const result = await res.json();
@@ -362,12 +488,13 @@
         document.getElementById('title').value = '';
         document.getElementById('message').value = '';
         document.getElementById('sender').value = '';
+        document.getElementById('nickname').value = ''; 
       } else {
-        alert('Error: ' + (result.error || 'unknown'));
+        showToast('Error: ' + (result.error || 'unknown'));
         resetSendingState();
       }
     } catch (err) {
-      alert('Failed to send. Try again.');
+      showToast('Error occurred');
       resetSendingState();
     } finally {
       isSending = false;
@@ -381,6 +508,21 @@
     sendBtn.classList.remove('sending');
   }
 
+
+  function showSkeletons(count = 3) {
+    const container = document.getElementById('lettersContainer');
+    for (let i = 0; i < count; i++) {
+      const div = document.createElement('div');
+      div.className = 'letter skeleton skeleton-letter';
+      container.appendChild(div);
+    }
+  }
+
+  function removeSkeletons() {
+    document.querySelectorAll('.skeleton').forEach(el => el.remove());
+  }
+
+
   async function fetchLetters(reset = false) {
     if (isLoading || allLoaded) return;
     isLoading = true;
@@ -388,16 +530,19 @@
     if (reset) {
       offset = 0;
       document.getElementById('lettersContainer').innerHTML = '';
-      document.getElementById('loadMoreBtn').style.display = 'none';
+      allLoaded = false;
     }
+
+    showSkeletons(); // 🆕 Show loading UI
 
     try {
       const res = await fetch(`${API_BASE}?offset=${offset}&limit=${PAGE_SIZE}`);
       const data = await res.json();
 
+      removeSkeletons(); // 🆕 Remove loaders
+
       if (!Array.isArray(data) || data.length === 0) {
         allLoaded = true;
-        document.getElementById('loadMoreBtn').style.display = 'none';
         isLoading = false;
         return;
       }
@@ -406,14 +551,18 @@
       lettersCache = lettersCache.concat(data);
       renderLetters(data, offset > 0);
       offset += data.length;
-
-      document.getElementById('loadMoreBtn').style.display =
-        data.length === PAGE_SIZE ? 'block' : 'none';
     } catch (err) {
       console.error('Fetch error', err);
+      removeSkeletons(); // In case of error
+      showToast('Failed to load letters. Please try again.', 'error'); // Add this line
     }
+
+
+    document.getElementById('loadMoreBtn').style.display = allLoaded ? 'none' : 'block';
+
     isLoading = false;
   }
+
 
   function shouldCollapse(dateStr) {
     const now = new Date();
@@ -449,13 +598,16 @@
     return `${years} year${years !== 1 ? 's' : ''} ago`;
   }
 
-  function escapeHTML(s) {
-    return s.replace(/[&<>"]/g, c => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;'
-    })[c]);
+  function escapeHTML(str) {
+    return str.replace(/[&<>"']/g, tag => (
+      {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[tag]
+    ));
   }
 
   function escapeHTMLWithBreaks(s) {
@@ -513,7 +665,56 @@
     return div;
   }
 
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.position = 'fixed';
+    toast.style.bottom = '20px';
+    toast.style.left = '50%';
+    toast.style.transform = 'translateX(-50%)';
+    toast.style.padding = '12px 24px';
+    toast.style.borderRadius = '4px';
+    toast.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+    toast.style.fontFamily = 'Arial, sans-serif';
+    toast.style.zIndex = '9999';
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s ease-in-out';
+
+    if (type === 'error') {
+      toast.style.backgroundColor = '#f44336';
+      toast.style.color = '#fff';
+    } else if (type === 'success') {
+      toast.style.backgroundColor = '#4caf50';
+      toast.style.color = '#fff';
+    } else {
+      toast.style.backgroundColor = '#333';
+      toast.style.color = '#fff';
+    }
+
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.style.opacity = '1';
+    });
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.addEventListener('transitionend', () => toast.remove());
+    }, 4000);
+  }
+
+
+
   document.getElementById('loadMoreBtn').addEventListener('click', fetchLetters);
+
+  
+  window.addEventListener('scroll', () => {
+  const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 200;
+  if (nearBottom && !isLoading && !allLoaded) {
+    fetchLetters(false);
+  }
+});
+
   fetchLetters(); // Initial load
 </script>
 
