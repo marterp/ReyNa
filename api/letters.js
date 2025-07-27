@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   const SCRIPT_URL = process.env.SCRIPT_URL;
-  const API_KEY = process.env.API_KEY;
+  const API_KEY = process.env.SECRET_KEY;
 
   if (!SCRIPT_URL || !API_KEY) {
     return res.status(500).json({ error: 'Missing SCRIPT_URL or API_KEY' });
