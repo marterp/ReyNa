@@ -55,82 +55,6 @@
       max-width: 600px;
       margin: auto;
     }
-    .navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: #ffffffcc;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.8em 1.2em;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      z-index: 999;
-    }
-
-    .navbar .logo {
-      font-family: 'Great Vibes', cursive;
-      font-size: 2rem;
-      color: #ff4b7d;
-      margin-left: 0.5em;
-    }
-
-    
-
-    .menu-btn {
-      font-size: 1.5rem;
-      cursor: pointer;
-      background: none;
-      border: none;
-      color: #ff4b7d;
-    }
-
-    .dropdown-menu {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background: #fff0f5;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      border-radius: 8px;
-      overflow: hidden;
-      display: none;
-      flex-direction: column;
-      z-index: 998;
-    }
-
-    .dropdown-menu a {
-      padding: 0.8em 1em;
-      text-decoration: none;
-      color: #ff4b7d;
-      font-size: 1rem;
-      transition: background 0.2s;
-    }
-
-    .dropdown-menu a:hover {
-      background: #ffe4ec;
-    }
-
-    .dropdown-menu.show {
-      display: flex;
-    }
-
-    .menu-wrapper {
-      display: none;
-    }
-
-    /* Desktop navigation links */
-    .nav-links a {
-      color: #ff4b7d;
-      margin-left: 1.5em;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover {
-      color: #ff6f9c;
-    }
 
     .letter {
       background: #fff;
@@ -309,19 +233,8 @@
 
     /*.page { display: none; }
     .page.active { display: block; }*/
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
-      .menu-wrapper {
-        display: block;
-        position: relative;
-      }
 
-      .carousel-item {
-            flex: 0 0 90%;
-      
-    }
+
 
     @media (max-width: 600px) {
       header h1 {
@@ -395,28 +308,8 @@
 </head>
 
 <body class="bg-[#fffaf5] font-sans text-gray-800 min-h-screen flex flex-col">
-    <!-- Navbar -->
-  <nav class="navbar">
-  <div class="logo">ReyNa</div>
-  
-  <!-- Desktop nav links -->
-  <div class="nav-links">
-    <a href="index.html">🏠 Home</a>
-    <a href="#about">💖 About</a>
-    <a href="#carousel">📁 Sections</a>
-  </div>
-
-  <!-- Mobile hamburger + dropdown -->
-  <div class="menu-wrapper">
-    <button class="menu-btn" onclick="toggleMenu()">☰</button>
-    <div class="dropdown-menu" id="dropdownMenu">
-      <a href="index.html">🏠 Home</a>
-      <a href="#about">💖 About</a>
-      <a href="#carousel">📁 Sections</a>
-    </div>
-  </div>
-</nav>
   <header class="text-center p-4 bg-white shadow"></header>
+<button><</button>
   <h1 class="text-xl font-bold text-pink-500">Letters 💌</h1>
   </header>
    
@@ -461,19 +354,6 @@
   let isSending = false;
   let currentTrap = null;
 
-  function toggleMenu() {
-      const menu = document.getElementById('dropdownMenu');
-      menu.classList.toggle('show');
-    }
-
-    // Optional: close menu if clicked outside
-    document.addEventListener('click', (e) => {
-      const menu = document.getElementById('dropdownMenu');
-      const btn = document.querySelector('.menu-btn');
-      if (!btn.contains(e.target) && !menu.contains(e.target)) {
-        menu.classList.remove('show');
-      }
-    });
 
   function debounceFetchLetters() {
     if (fetchTimeout) clearTimeout(fetchTimeout);
