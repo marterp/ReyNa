@@ -377,6 +377,9 @@ float: left;
   let isSending = false;
   let currentTrap = null;
 
+ document.getElementById('backBtn').addEventListener('click', function() {
+    window.location.href = 'index.html';
+  });
 
   function debounceFetchLetters() {
     if (fetchTimeout) clearTimeout(fetchTimeout);
