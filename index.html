@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ReyNa</title>
 
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 
   <style>
@@ -39,6 +38,11 @@
       font-family: 'Great Vibes', cursive;
       font-size: 2rem;
       color: #ff4b7d;
+      margin-left: 0.5em;
+    }
+
+    .menu-wrapper {
+      position: relative;
     }
 
     .menu-btn {
@@ -49,30 +53,33 @@
       color: #ff4b7d;
     }
 
-    /* Sidebar */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: -250px;
-      width: 250px;
-      height: 100%;
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
       background: #fff0f5;
-      box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-      padding: 2em 1em;
-      transition: left 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
       z-index: 998;
     }
 
-    .sidebar a {
-      display: block;
-      color: #ff4b7d;
-      margin: 1em 0;
-      font-size: 1.2rem;
+    .dropdown-menu a {
+      padding: 0.8em 1em;
       text-decoration: none;
+      color: #ff4b7d;
+      font-size: 1rem;
+      transition: background 0.2s;
     }
 
-    .sidebar.show {
-      left: 0;
+    .dropdown-menu a:hover {
+      background: #ffe4ec;
+    }
+
+    .dropdown-menu.show {
+      display: flex;
     }
 
     header {
@@ -167,7 +174,6 @@
       color: #777;
     }
 
-    /* Responsive */
     @media (max-width: 600px) {
       .carousel-item {
         flex: 0 0 90%;
@@ -180,16 +186,16 @@
 
   <!-- Navbar -->
   <nav class="navbar">
+    <div class="menu-wrapper">
+      <button class="menu-btn" onclick="toggleMenu()">☰</button>
+      <div class="dropdown-menu" id="dropdownMenu">
+        <a href="#home">🏠 Home</a>
+        <a href="#about">💖 About</a>
+        <a href="#carousel">📁 Sections</a>
+      </div>
+    </div>
     <div class="logo">ReyNa</div>
-    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
   </nav>
-
-  <!-- Sidebar Menu -->
-  <div class="sidebar" id="sidebar">
-    <a href="#home">🏠 Home</a>
-    <a href="#about">💖 About</a>
-    <a href="#carousel">📁 Sections</a>
-  </div>
 
   <!-- Home Section -->
   <header id="home">
@@ -226,9 +232,19 @@
   </footer>
 
   <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("show");
+    function toggleMenu() {
+      const menu = document.getElementById('dropdownMenu');
+      menu.classList.toggle('show');
     }
+
+    // Optional: close menu if clicked outside
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('dropdownMenu');
+      const btn = document.querySelector('.menu-btn');
+      if (!btn.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.remove('show');
+      }
+    });
   </script>
 
 </body>
