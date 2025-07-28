@@ -6,7 +6,18 @@
   <title>ReyNa</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
+  <meta name="description" content="Read and send unread letters anonymously or with your name. A simple, elegant letters app.">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Letters 💌">
+
+  <!--<script src="https://cdn.tailwindcss.com"></script>-->
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+  <link rel="manifest" href="favicon_io/site.webmanifest">
   <style>
     * {
       box-sizing: border-box;
@@ -217,7 +228,7 @@
 
   <!-- Navbar -->
   <nav class="navbar">
-  <div class="logo">ReyNa</div>
+  <div class="logo"><a href="index.html">ReyNa</a></div>
   
   <!-- Desktop nav links -->
   <div class="nav-links">
@@ -286,7 +297,41 @@
         menu.classList.remove('show');
       }
     });
+
+    // Smooth scroll for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+    // Auto-scroll to carousel on page load
+    window.addEventListener('load', () => {
+      document.getElementById('carousel').scrollIntoView({ behavior: 'smooth' });
+    });
+    
+
+    // Auto-scroll to home section on page load
+    window.addEventListener('load', () => {
+      document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
+    });
+
+
+    // Auto-scroll to about section on page load
+    window.addEventListener('load', () => {
+      document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+    });
+
+
+    // Auto-scroll to carousel section on page load
+    window.addEventListener('load', () => {
+      document.getElementById('carousel').scrollIntoView({ behavior: 'smooth' });
+    });
+
   </script>
 
 </body>
 </html>
+ 

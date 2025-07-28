@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Letters 💌</title>
+  <title>ReyNa</title>
 
   <meta name="description" content="Read and send unread letters anonymously or with your name. A simple, elegant letters app.">
   <meta name="robots" content="index, follow">
@@ -14,7 +14,8 @@
   <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
   <link rel="manifest" href="favicon_io/site.webmanifest">
-
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -45,6 +46,83 @@
       max-width: 600px;
       margin: auto;
     }
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #ffffffcc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8em 1.2em;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 999;
+    }
+
+    .navbar .logo {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2rem;
+      color: #ff4b7d;
+      margin-left: 0.5em;
+    }
+
+    
+
+    .menu-btn {
+      font-size: 1.5rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #ff4b7d;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #fff0f5;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+      z-index: 998;
+    }
+
+    .dropdown-menu a {
+      padding: 0.8em 1em;
+      text-decoration: none;
+      color: #ff4b7d;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    .dropdown-menu a:hover {
+      background: #ffe4ec;
+    }
+
+    .dropdown-menu.show {
+      display: flex;
+    }
+
+    .menu-wrapper {
+      display: none;
+    }
+
+    /* Desktop navigation links */
+    .nav-links a {
+      color: #ff4b7d;
+      margin-left: 1.5em;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #ff6f9c;
+    }
+
     .letter {
       background: #fff;
       margin-bottom: 1.5rem;
@@ -222,6 +300,19 @@
 
     /*.page { display: none; }
     .page.active { display: block; }*/
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .menu-wrapper {
+        display: block;
+        position: relative;
+      }
+
+      .carousel-item {
+            flex: 0 0 90%;
+      
+    }
 
     @media (max-width: 600px) {
       header h1 {
@@ -297,101 +388,32 @@
 <body class="bg-[#fffaf5] font-sans text-gray-800 min-h-screen flex flex-col">
 
   <header class="text-center p-4 bg-white shadow">
-    <h1 class="text-xl font-bold text-pink-500">Letters 💌</h1>
-  </header>
+    <!-- Navbar -->
+  <nav class="navbar">
+  <div class="logo"><a href="index.html">ReyNa</a></div>
+  
+  <!-- Desktop nav links -->
+  <div class="nav-links">
+    <a href="index.html">🏠 Home</a>
+    <a href="#about">💖 About</a>
+    <a href="#carousel">📁 Sections</a>
+  </div>
 
+  <!-- Mobile hamburger + dropdown -->
+  <div class="menu-wrapper">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <div class="dropdown-menu" id="dropdownMenu">
+      <a href="index.html">🏠 Home</a>
+      <a href="#about">💖 About</a>
+      <a href="#carousel">📁 Sections</a>
+    </div>
+  </div>
+</nav>
+  </header>
+    <h1 class="text-xl font-bold text-pink-500">Letters 💌</h1>
    <main id="lettersContainer" class="flex-grow p-4">
     <!-- Letters inserted here -->
    </main>
-
-  <!-- Page Content 
-  <main class="flex-grow p-4">
-    <!-- Home Page 
-    <section id="homePage" class="page active">
-      <h2 class="text-lg font-semibold">Welcome Home</h2>
-      <p>This is your dashboard or intro page.</p>
-    </section>
-
-    <!-- Letters Page 
-    <section id="lettersContainer" class="page">
-
-    </section>
-
-    <!-- Notifications Page 
-    <section id="notificationsPage" class="page">
-      <h2 class="text-lg font-semibold mb-4">Notifications</h2>
-      <div class="bg-white p-4 rounded shadow mb-2">📬 Coming soon!</div>
-    </section>
-
-    <!-- Account Page
-    <section id="accountPage" class="page">
-      <h2 class="text-lg font-semibold mb-4">Account Settings</h2>
-      <p class="mb-2">Name: <strong>Anonymous</strong></p>
-      <p class="mb-2">Coming soon!</p>
-      <button class="mt-4 bg-gray-200 px-4 py-2 rounded hover:bg-gray-300" style="display:none">Edit Profile</button>
-    </section>
-  </main>
-
-<!-- Bottom Navigation Bar
-  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-md">
-    <div class="flex justify-around items-center relative h-16">
-      
-      <!-- Home 
-      <button class="nav-btn flex flex-col items-center text-gray-400" onclick="navigateTo('homePage')">
-        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" />
-        </svg>
-        <span class="text-xs">Home</span>
-      </button>
-
-      <!-- Letters 
-      <button class="nav-btn flex flex-col items-center text-gray-400" onclick="navigateTo('lettersContainer')">
-        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path d="M21 10H7a2 2 0 00-2 2v4a2 2 0 002 2h14v-6a2 2 0 00-2-2zM3 8h18a2 2 0 012 2v6a2 2 0 01-2 2H3v-6a2 2 0 012-2z" />
-        </svg>
-        <span class="text-xs">Letters</span>
-      </button>
-
-      <!-- Add (center button) 
-      <button class="absolute -top-6 bg-pink-500 text-white p-4 rounded-full shadow-lg hover:scale-105 transition-transform" onclick="openModal()" aria-label="Add new letter">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-          <path d="M12 4v16m8-8H4" />
-        </svg>
-      </button>
-
-      <!-- Notifications 
-      <button class="nav-btn flex flex-col items-center text-gray-400">
-        <div class="relative">
-          <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" onclick="navigateTo('notificationsPage')">
-            <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-          </svg>
-          <span class="absolute top-0 right-0 bg-red-500 text-white text-[10px] px-1 rounded-full"></span>
-        </div>
-        <span class="text-xs">Alerts</span>
-      </button>
-
-      <!-- Account
-      <button class="nav-btn flex flex-col items-center text-gray-400" onclick="navigateTo('accountPage')">
-        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path d="M5.121 17.804A7 7 0 0112 15a7 7 0 016.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-        <span class="text-xs">Account</span>
-      </button>
-    </div>
-  </nav>-->
-
-  <!-- JavaScript to handle navigation
-  <script>
-    function navigateTo(pageId) {
-      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
-
-      // Optional: highlight active button
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-pink-500'));
-      const btn = [...document.querySelectorAll('.nav-btn')].find(b => b.getAttribute('onclick')?.includes(pageId));
-      if (btn) btn.classList.add('text-pink-500');
-    }
-  </script> -->
 
   <button class="fab" onclick="openModal()" aria-label="Add new letter">+</button>
 
