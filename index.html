@@ -20,6 +20,8 @@
       scroll-behavior: smooth;
     }
 
+    
+
     /* Navbar */
     .navbar {
       position: fixed;
@@ -41,9 +43,7 @@
       margin-left: 0.5em;
     }
 
-    .menu-wrapper {
-      position: relative;
-    }
+    
 
     .menu-btn {
       font-size: 1.5rem;
@@ -173,12 +173,43 @@
       font-size: 0.9rem;
       color: #777;
     }
+    
 
-    @media (max-width: 600px) {
-      .carousel-item {
+   
+    /* Default: hide mobile hamburger menu and dropdown */
+.menu-wrapper {
+  display: none;
+}
+
+/* Desktop navigation links */
+.nav-links a {
+  color: #ff4b7d;
+  margin-left: 1.5em;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: #ff6f9c;
+}
+
+/* Mobile: hide desktop links, show hamburger */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+  .menu-wrapper {
+    display: block;
+    position: relative;
+  }
+
+  .carousel-item {
         flex: 0 0 90%;
-      }
-    }
+  
+}
+
   </style>
 </head>
 
@@ -186,16 +217,26 @@
 
   <!-- Navbar -->
   <nav class="navbar">
-    <div class="menu-wrapper">
-      <button class="menu-btn" onclick="toggleMenu()">☰</button>
-      <div class="dropdown-menu" id="dropdownMenu">
-        <a href="#home">🏠 Home</a>
-        <a href="#about">💖 About</a>
-        <a href="#carousel">📁 Sections</a>
-      </div>
+  <div class="logo">ReyNa</div>
+  
+  <!-- Desktop nav links -->
+  <div class="nav-links">
+    <a href="#home">🏠 Home</a>
+    <a href="#about">💖 About</a>
+    <a href="#carousel">📁 Sections</a>
+  </div>
+
+  <!-- Mobile hamburger + dropdown -->
+  <div class="menu-wrapper">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <div class="dropdown-menu" id="dropdownMenu">
+      <a href="#home">🏠 Home</a>
+      <a href="#about">💖 About</a>
+      <a href="#carousel">📁 Sections</a>
     </div>
-    <div class="logo">ReyNa</div>
-  </nav>
+  </div>
+</nav>
+
 
   <!-- Home Section -->
   <header id="home">
