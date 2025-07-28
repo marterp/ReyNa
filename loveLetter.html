@@ -331,7 +331,10 @@ float: left;
 <body class="bg-[#fffaf5] font-sans text-gray-800 min-h-screen flex flex-col">
   <header class="text-center p-4 bg-white shadow"></header>
 
-<button class="header-btn" aria-label="Back">&lt;</button>
+<button class="header-btn" aria-label="Back">
+<a href="index.html"><</a>
+</button>
+
   <h1 class="text-xl font-bold text-pink-500">Letters 💌</h1>
 
   <!--</header>-->
@@ -377,9 +380,6 @@ float: left;
   let isSending = false;
   let currentTrap = null;
 
- document.getElementById('backBtn').addEventListener('click', function() {
-    window.location.href = 'index.html';
-  });
 
   function debounceFetchLetters() {
     if (fetchTimeout) clearTimeout(fetchTimeout);
