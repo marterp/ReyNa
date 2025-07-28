@@ -3,6 +3,7 @@ export default async function handler(req, res) {
   const API_KEY = process.env.API_KEY;
 
   if (!SCRIPT_URL || !API_KEY) {
+    console.error('Missing SCRIPT_URL or API_KEY env variables');
     return res.status(500).json({ error: 'Missing SCRIPT_URL or API_KEY' });
   }
 
@@ -18,12 +19,18 @@ export default async function handler(req, res) {
       const response = await fetch(url.toString());
       const text = await response.text();
 
+      if (!response.ok) {
+        console.error('Upstream GET error:', response.status, text);
+        return res.status(502).json({ error: 'Upstream service error', status: response.status, details: text });
+      }
+
       try {
         const data = JSON.parse(text);
         return res.status(200).json(data);
       } catch (err) {
-        console.error('Invalid JSON from Google Script (GET):', text);
-        return res.status(500).json({ error: 'Invalid JSON returned from script' });
+        console.error('Failed to parse JSON from Google Script (GET):', err);
+        console.error('Response text:', text);
+        return res.status(502).json({ error: 'Invalid JSON returned from script' });
       }
     }
 
@@ -47,12 +54,18 @@ export default async function handler(req, res) {
 
       const text = await response.text();
 
+      if (!response.ok) {
+        console.error('Upstream POST error:', response.status, text);
+        return res.status(502).json({ error: 'Upstream service error', status: response.status, details: text });
+      }
+
       try {
         const data = JSON.parse(text);
         return res.status(200).json(data);
       } catch (err) {
-        console.error('Invalid JSON from Google Script (POST):', text);
-        return res.status(500).json({ error: 'Invalid JSON returned from script' });
+        console.error('Failed to parse JSON from Google Script (POST):', err);
+        console.error('Response text:', text);
+        return res.status(502).json({ error: 'Invalid JSON returned from script' });
       }
     }
 
