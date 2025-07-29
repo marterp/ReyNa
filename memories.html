@@ -16,15 +16,15 @@
   <link rel="manifest" href="favicon_io/site.webmanifest">
  
   <style>
+      *, *::before, *::after {
+      box-sizing: border-box;
+    }
     body {
       margin: 0;
+      padding: 0;
+      background: #fffaf5;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #fff0f5 0%, #ffe0ec 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 2em;
+      color: #333;
     }
 
      header {
@@ -49,6 +49,13 @@
       text-shadow: 0 1px 2px rgba(0,0,0
 ,0.1);
 text-align: center;
+    }
+
+
+     main {
+      padding: 1rem;
+      max-width: 600px;
+      margin: auto;
     }
 
     .back-arrow {
@@ -116,9 +123,13 @@ text-align: center;
       }
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 600px) {
        header h1 {
         font-size: 1.5rem;
+      }
+
+      main {
+        padding: 0.8rem;
       }
       .letter-content h2 {
         font-size: 1.3rem;
@@ -137,6 +148,10 @@ text-align: center;
 <a href="index.html" class="back-arrow">&lt;</a>
   <h1 class="text-xl font-bold text-pink-500">Memories 🖼️</h1>
 </header>
+
+<main id="lettersContainer" class="flex-grow p-4">
+    <!-- Letters inserted here -->
+</main>
   <!-- 💌 Envelope Style -->
   <div class="envelope">
     <!--  <div class="flap"></div>
