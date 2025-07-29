@@ -3,7 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Letters 💌</title>
+  <title>ReyNa</title>
+  <meta name="description" content="Read and send unread letters anonymously From your Love. A simple, elegant Love Letter app.">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Letters From Love 💌">
+
+  <!--<script src="https://cdn.tailwindcss.com"></script>-->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+  <link rel="manifest" href="favicon_io/site.webmanifest">
+ 
   <style>
     body {
       margin: 0;
@@ -14,6 +25,30 @@
       align-items: center;
       min-height: 100vh;
       padding: 2em;
+    }
+
+     header {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: #e91e63;
+    }
+     h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.5rem;
+      color: #ff4b7d;
+      margin: 0.5rem 0;
+      text-shadow: 0 1px 2px rgba(0,0,0
+,0.1);
+text-align: center;
     }
 
     .back-arrow {
@@ -82,6 +117,9 @@
     }
 
     @media (max-width: 500px) {
+       header h1 {
+        font-size: 1.5rem;
+      }
       .letter-content h2 {
         font-size: 1.3rem;
       }
@@ -93,9 +131,12 @@
 </head>
 <body>
 
-  <!-- 🔙 Back to main -->
-  <a href="index.html" class="back-arrow"><</a>
-
+ 
+   <header class="text-center p-4 bg-white shadow">
+     <!-- 🔙 Back to main -->
+<a href="index.html" class="back-arrow">&lt;</a>
+  <h1 class="text-xl font-bold text-pink-500">Memories 🖼️</h1>
+</header>
   <!-- 💌 Envelope Style -->
   <div class="envelope">
     <!--  <div class="flap"></div>
