@@ -95,18 +95,18 @@ text-align: center;
       clip-path: polygon(0 0, 100% 0, 50% 100%);
     }
 
-    .letter-content {
+    .pics-content {
       padding: 1.5em;
       animation: slideDown 0.6s ease;
     }
 
-    .letter-content h2 {
+    .pics-content h2 {
       color: #ff4b7d;
       margin-bottom: 0.5em;
       font-size: 1.5rem;
     }
 
-    .letter-content p {
+    .pics-content p {
       font-size: 1.1rem;
       line-height: 1.6;
       color: #444;
@@ -131,10 +131,10 @@ text-align: center;
       main {
         padding: 0.8rem;
       }
-      .letter-content h2 {
+      .pics-content h2 {
         font-size: 1.3rem;
       }
-      .letter-content p {
+      .pics-content p {
         font-size: 1rem;
       }
     }
@@ -149,27 +149,41 @@ text-align: center;
   <h1 class="text-xl font-bold text-pink-500">Memories 🖼️</h1>
 </header>
 
-<main id="lettersContainer" class="flex-grow p-4">
-    <!-- Letters inserted here -->
+<main id="picsContainer" class="flex-grow p-4">
+     <!--Insert Pictures Here -->
 </main>
-  <!-- 💌 Envelope Style -->
-  <div class="envelope">
-    <!--  <div class="flap"></div>
-    <div class="letter-content">
-      <h2>To My ReyNa ❤️</h2>
-      <p>
-        Ay-ayaten ka unay, lablab ko.  
-        Di ko maipaliwanag no kasano ka napintas ti puso ken panunot ko.  
-        Sika lang ti kayat ko nga aywanan, sika lang ti pagayatan.  
-        I’m so lucky to have you. 🫶  
-        Thank you for being mine.  
-      </p>
-      <p style="text-align: right;">– Luvluv 😚</p>
-    </div>-->
-    <div class="letter-content">
-    <p>Coming soon... 🤗</p>
-    </div>
-  </div>
+  
+<script>
+ 
+  // Placeholder for future functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const lettersContainer = document.getElementById('picsContainer');
+    // You can dynamically load letters here in the future
+    // For now, we just show a placeholder message
+    picsContainer.innerHTML = '<p>Coming soon... 🤗</p>';
+  });
+
+ //placeholder how to load pictures
+  function loadPictures() {
+    const pictures = [
+      'https://example.com/picture1.jpg',
+      'https://example.com/picture2.jpg',
+      'https://example.com/picture3.jpg'
+    ];
+    const container = document.getElementById('lettersContainer');
+    pictures.forEach(picture => {
+      const img = document.createElement('img');
+      img.src = picture;
+      img.alt = 'Memory Picture';
+      img.style.width = '100%';
+      img.style.borderRadius = '8px';
+      img.style.marginBottom = '1rem';
+      container.appendChild(img);
+    });
+  }
+  // Uncomment to load pictures
+   loadPictures();
+</script>
 
 </body>
 </html>
